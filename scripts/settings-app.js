@@ -48,7 +48,8 @@ export class GMSSettingsApp extends HandlebarsApplicationMixin(ApplicationV2) {
       volume: game.settings.get(MODULE_ID, SETTINGS.VOLUME),
       duration: game.settings.get(MODULE_ID, SETTINGS.DURATION),
       fadeIn: game.settings.get(MODULE_ID, SETTINGS.FADE_IN),
-      fadeOut: game.settings.get(MODULE_ID, SETTINGS.FADE_OUT)
+      fadeOut: game.settings.get(MODULE_ID, SETTINGS.FADE_OUT),
+      triggerOnSceneActivation: game.settings.get(MODULE_ID, SETTINGS.TRIGGER_ON_SCENE_ACTIVATION)
     };
   }
 
@@ -176,7 +177,8 @@ export class GMSSettingsApp extends HandlebarsApplicationMixin(ApplicationV2) {
       game.settings.set(MODULE_ID, SETTINGS.VOLUME, Number(data.volume) || 0),
       game.settings.set(MODULE_ID, SETTINGS.DURATION, Number(data.duration) || 0),
       game.settings.set(MODULE_ID, SETTINGS.FADE_IN, Number(data.fadeIn) || 0),
-      game.settings.set(MODULE_ID, SETTINGS.FADE_OUT, Number(data.fadeOut) || 0)
+      game.settings.set(MODULE_ID, SETTINGS.FADE_OUT, Number(data.fadeOut) || 0),
+      game.settings.set(MODULE_ID, SETTINGS.TRIGGER_ON_SCENE_ACTIVATION, !!data.triggerOnSceneActivation)
     ]);
   }
 }

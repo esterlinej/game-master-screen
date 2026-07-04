@@ -1,12 +1,14 @@
 import { MODULE_ID, debug } from "./const.js";
 import { registerSettings } from "./settings.js";
 import { registerSceneControls } from "./scene-controls.js";
+import { registerSceneActivationTrigger } from "./scene-activation.js";
 import { initSocketListener, checkActiveOnReady } from "./core.js";
 
 Hooks.once("init", () => {
   console.log(`${MODULE_ID} | Initializing`);
   registerSettings();
   registerSceneControls();
+  registerSceneActivationTrigger();
 });
 
 Hooks.once("ready", () => {

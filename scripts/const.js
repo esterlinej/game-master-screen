@@ -45,6 +45,8 @@ export const SETTINGS = {
   FADE_IN: "fadeIn",             // ms
   FADE_OUT: "fadeOut",           // ms
 
+  TRIGGER_ON_SCENE_ACTIVATION: "triggerOnSceneActivation", // bool
+
   GMS_ACTIVE: "gmsActive",       // world-scope state flag, not user-facing config
   GMS_ACTIVE_MEDIA: "gmsActiveMedia", // world-scope — the media payload currently
                                        // showing, so a client connecting mid-GMS

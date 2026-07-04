@@ -116,6 +116,13 @@ export function registerSettings() {
     default: 2500
   });
 
+  game.settings.register(MODULE_ID, SETTINGS.TRIGGER_ON_SCENE_ACTIVATION, {
+    scope: "world",
+    config: false,
+    type: Boolean,
+    default: false
+  });
+
   // Internal state flag — world-scoped so it syncs to every client (incl.
   // a second GM account on another monitor) without a bespoke socket ping.
   // Not exposed in any settings UI.

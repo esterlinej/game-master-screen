@@ -4,29 +4,42 @@ import { broadcastShow, broadcastClose, registerSocketListener } from "./sockets
 import { showOverlay, removeOverlay } from "./overlay.js";
 import { showPopout, removePopout } from "./popout.js";
 
+let triggering = false;
+
 /**
  * GM-initiated trigger. No-ops if GMS is already active anywhere, per the
  * "ignore duplicate clicks" requirement — a single world-scope flag is the
  * source of truth so a second GM client (or a fat-fingered double click)
  * can't spawn a second overlay/broadcast.
+ *
+ * The `triggering` in-memory flag closes a narrow race the world-setting
+ * guard alone can't: game.settings.set() is a network round-trip, so two
+ * near-simultaneous calls (e.g. rapid scene activations) could both read
+ * "not active yet" before either write resolves. Setting `triggering`
+ * synchronously, before any await, closes that window immediately.
  */
 export async function showGameMasterScreen() {
-  if (game.settings.get(MODULE_ID, SETTINGS.GMS_ACTIVE)) {
+  if (triggering || game.settings.get(MODULE_ID, SETTINGS.GMS_ACTIVE)) {
     ui.notifications.info("Game Master Screen is already active.");
     return;
   }
+  triggering = true;
 
-  const mediaData = await buildMediaPayload();
+  try {
+    const mediaData = await buildMediaPayload();
 
-  // Persisted alongside the flag — this is what lets a client connecting
-  // mid-GMS (late join, reload, reconnect) catch itself up on `ready`
-  // instead of only ever reacting to the live broadcast moment.
-  await game.settings.set(MODULE_ID, SETTINGS.GMS_ACTIVE, true);
-  await game.settings.set(MODULE_ID, SETTINGS.GMS_ACTIVE_MEDIA, mediaData);
-  broadcastShow(mediaData);
+    // Persisted alongside the flag — this is what lets a client connecting
+    // mid-GMS (late join, reload, reconnect) catch itself up on `ready`
+    // instead of only ever reacting to the live broadcast moment.
+    await game.settings.set(MODULE_ID, SETTINGS.GMS_ACTIVE, true);
+    await game.settings.set(MODULE_ID, SETTINGS.GMS_ACTIVE_MEDIA, mediaData);
+    broadcastShow(mediaData);
 
-  // The emitting client doesn't receive its own broadcast — render locally.
-  renderLocalShow(mediaData);
+    // The emitting client doesn't receive its own broadcast — render locally.
+    renderLocalShow(mediaData);
+  } finally {
+    triggering = false;
+  }
 }
 
 /**
@@ -36,10 +49,12 @@ export async function showGameMasterScreen() {
  * matters for the crash-recovery case.
  */
 export async function closeGameMasterScreen() {
+  const mediaData = game.settings.get(MODULE_ID, SETTINGS.GMS_ACTIVE_MEDIA);
   await game.settings.set(MODULE_ID, SETTINGS.GMS_ACTIVE, false);
   await game.settings.set(MODULE_ID, SETTINGS.GMS_ACTIVE_MEDIA, null);
   broadcastClose();
   renderLocalClose();
+  Hooks.callAll(`${MODULE_ID}.closed`, mediaData);
 }
 
 /** What THIS client renders when GMS activates — branches on GM vs player. */

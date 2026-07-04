@@ -139,6 +139,18 @@
     </div>
   </fieldset>
 
+  <fieldset class="gms-universal">
+    <legend>Automatic Triggers</legend>
+
+    <div class="form-group">
+      <label>
+        <input type="checkbox" name="triggerOnSceneActivation" {{#if triggerOnSceneActivation}}checked{{/if}} />
+        Trigger on Scene Activation
+      </label>
+      <p class="hint">Automatically shows Game Master Screen whenever a GM activates a scene (not just views it). Uses the same media configured above.</p>
+    </div>
+  </fieldset>
+
   <footer class="sheet-footer gms-footer">
     <button type="button" class="gms-preview"><i class="fa-solid fa-eye"></i> Preview</button>
     <button type="submit"><i class="fa-solid fa-save"></i> Save</button>
