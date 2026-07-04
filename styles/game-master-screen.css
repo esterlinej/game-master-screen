@@ -1,0 +1,153 @@
+.gms-settings-form .hint {
+  font-size: 12px;
+  opacity: 0.7;
+  margin: 2px 0 0;
+}
+
+.gms-settings-form .gms-universal {
+  margin-bottom: 8px;
+}
+
+.gms-footer {
+  display: flex;
+  gap: 8px;
+}
+
+.gms-footer button {
+  flex: 1;
+}
+
+#gms-player-overlay .gms-preview-badge {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-family: var(--font-primary, sans-serif);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.gms-volume-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gms-volume-row input[type="range"] {
+  flex: 1;
+}
+
+.gms-volume-value {
+  min-width: 40px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Settings form */
+.gms-settings-form .gms-radio-group {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.gms-settings-form .gms-radio {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: normal;
+}
+
+.gms-settings-form textarea.gms-fullwidth {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+.gms-settings-form .gms-section {
+  margin-bottom: 8px;
+}
+
+.gms-settings-form .gms-section.gms-hidden {
+  display: none;
+}
+
+/* Player-facing full-screen overlay */
+#gms-player-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999999;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+#gms-player-overlay .gms-media-primary {
+  width: 100%;
+  height: 100%;
+}
+
+#gms-player-overlay audio {
+  display: none;
+}
+
+/* GM-only compact preview pane — never modal, never blocks the canvas.
+   Positioned via JS (centered on open, then draggable) rather than a fixed
+   CSS anchor, so left/top below are just fallback/initial values. */
+#gms-popout {
+  position: fixed;
+  width: 390px;
+  z-index: 100000;
+  background: rgba(20, 20, 20, 0.92);
+  border: 1px solid #666;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  color: #eee;
+  font-family: var(--font-primary, sans-serif);
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+#gms-popout .gms-popout-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.4);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: move;
+  user-select: none;
+}
+
+#gms-popout .gms-popout-close {
+  cursor: pointer;
+  color: #eee;
+}
+
+#gms-popout .gms-popout-close:hover {
+  color: #ff6666;
+}
+
+#gms-popout .gms-popout-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-height: 240px;
+  overflow: hidden;
+}
+
+#gms-popout .gms-popout-body img,
+#gms-popout .gms-popout-body video {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}

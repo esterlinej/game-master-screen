@@ -1,0 +1,10 @@
+{
+  "GMS.Controls.Title": "Game Master Screen",
+  "GMS.Controls.Trigger": "Trigger",
+  "GMS.Controls.Close": "Close",
+  "GMS.Controls.Settings": "Settings",
+  "GMS.Settings.Title": "Game Master Screen — Settings",
+  "GMS.Settings.Hint": "Configure the media shown when Game Master Screen is triggered.",
+  "GMS.Settings.DebugName": "Debug Logging",
+  "GMS.Settings.DebugHint": "Shows on-screen notifications (in addition to console logs) confirming Game Master Screen's socket events and lifecycle hooks are firing on this client. Useful for troubleshooting without needing to check the browser console."
+}

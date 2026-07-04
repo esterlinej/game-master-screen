@@ -1,0 +1,33 @@
+{
+  "id": "game-master-screen",
+  "title": "Game Master Screen",
+  "description": "A full-screen GM-controlled overlay for pauses, intermissions, and scene loading. Trigger manually, with a compact GM-side popout that doesn't block board management.",
+  "version": "0.1.14",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "14"
+  },
+  "authors": [
+    {
+      "name": "esterlinej"
+    }
+  ],
+  "esmodules": [
+    "scripts/main.js"
+  ],
+  "socket": true,
+  "styles": [
+    "styles/game-master-screen.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "url": "https://github.com/esterlinej/game-master-screen",
+  "manifest": "https://raw.githubusercontent.com/esterlinej/game-master-screen/main/module.json",
+  "download": "https://github.com/esterlinej/game-master-screen/archive/refs/heads/main.zip",
+  "license": "LICENSE"
+}

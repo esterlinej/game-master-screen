@@ -1,0 +1,146 @@
+<div class="gms-settings-form">
+  <div class="form-group gms-mode-select">
+    <label>Media Mode</label>
+    <div class="form-fields gms-radio-group">
+      <label class="gms-radio">
+        <input type="radio" name="mediaMode" value="single" {{#if isSingle}}checked{{/if}} />
+        Single Image
+      </label>
+      <label class="gms-radio">
+        <input type="radio" name="mediaMode" value="list" {{#if isList}}checked{{/if}} />
+        Image List
+      </label>
+      <label class="gms-radio">
+        <input type="radio" name="mediaMode" value="video" {{#if isVideo}}checked{{/if}} />
+        Video
+      </label>
+    </div>
+  </div>
+
+  <fieldset class="gms-section" data-mode="single">
+    <legend>Single Image</legend>
+    <div class="form-group">
+      <label>Image Path</label>
+      <div class="form-fields">
+        <input type="text" name="imagePath" value="{{imagePath}}" placeholder="path/to/image.webp" />
+        <button type="button" class="gms-browse" data-target="imagePath" data-type="image">
+          <i class="fa-solid fa-folder-open"></i>
+        </button>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="gms-section" data-mode="list">
+    <legend>Image List</legend>
+
+    <div class="form-group">
+      <label>Images (one path per line, in display order)</label>
+      <textarea name="imageList" rows="6" class="gms-fullwidth" placeholder="path/to/image-1.webp&#10;path/to/image-2.webp">{{imageListText}}</textarea>
+      <div class="form-fields">
+        <button type="button" class="gms-browse" data-target="imageList" data-type="image" data-append="true">
+          <i class="fa-solid fa-folder-open"></i> Add image to list
+        </button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>
+        <input type="checkbox" name="randomizeOrder" {{#if randomizeOrder}}checked{{/if}} />
+        Randomize order each time GMS is triggered
+      </label>
+    </div>
+
+    <div class="form-group">
+      <label>Rotation Interval (seconds)</label>
+      <input type="number" name="rotateInterval" value="{{rotateInterval}}" min="1" />
+    </div>
+  </fieldset>
+
+  <fieldset class="gms-section" data-mode="video">
+    <legend>Video</legend>
+    <div class="form-group">
+      <label>Video Path</label>
+      <div class="form-fields">
+        <input type="text" name="videoPath" value="{{videoPath}}" placeholder="path/to/video.webm" />
+        <button type="button" class="gms-browse" data-target="videoPath" data-type="video">
+          <i class="fa-solid fa-folder-open"></i>
+        </button>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="gms-universal">
+    <legend>Media</legend>
+
+    <div class="form-group">
+      <label>Audio Track (optional)</label>
+      <div class="form-fields">
+        <input type="text" name="audioPath" value="{{audioPath}}" placeholder="path/to/audio.ogg" />
+        <button type="button" class="gms-browse" data-target="audioPath" data-type="audio">
+          <i class="fa-solid fa-folder-open"></i>
+        </button>
+      </div>
+      <p class="hint">Plays alongside any media mode above. If set while Video is selected, the video's own audio is muted and this file plays instead.</p>
+    </div>
+
+    <div class="form-group">
+      <label>Picture / Video Fit</label>
+      <select name="mediaFit">
+        <option value="contain" {{#if fitContain}}selected{{/if}}>Contain (fit inside, may show borders)</option>
+        <option value="cover" {{#if fitCover}}selected{{/if}}>Cover (fill screen, may crop)</option>
+        <option value="stretch" {{#if fitStretch}}selected{{/if}}>Stretch (fill screen, may distort)</option>
+        <option value="original" {{#if fitOriginal}}selected{{/if}}>Original size (centred)</option>
+      </select>
+      <p class="hint">How the picture and video fill the screen.</p>
+    </div>
+  </fieldset>
+
+  <fieldset class="gms-universal">
+    <legend>Timing Configuration</legend>
+
+    <div class="form-group">
+      <label>
+        <input type="checkbox" name="loopMedia" {{#if loopMedia}}checked{{/if}} />
+        Loop video / audio
+      </label>
+    </div>
+
+    <div class="form-group">
+      <label>
+        <input type="checkbox" name="muteAudio" {{#if muteAudio}}checked{{/if}} />
+        Mute audio
+      </label>
+    </div>
+
+    <div class="form-group">
+      <label>Volume</label>
+      <div class="gms-volume-row">
+        <input type="range" name="volume" min="0" max="100" value="{{volume}}" />
+        <span class="gms-volume-value">{{volume}}%</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Duration in seconds</label>
+      <input type="number" name="duration" value="{{duration}}" min="0" placeholder="0" />
+      <p class="hint">Leave at 0 to require the GM to close it manually.</p>
+    </div>
+
+    <div class="form-group">
+      <label>Fade In (ms)</label>
+      <input type="number" name="fadeIn" value="{{fadeIn}}" min="0" step="50" />
+      <p class="hint">Milliseconds for Game Master Screen to fade in. Use 0 for instant.</p>
+    </div>
+
+    <div class="form-group">
+      <label>Fade Out (ms)</label>
+      <input type="number" name="fadeOut" value="{{fadeOut}}" min="0" step="50" />
+      <p class="hint">Milliseconds for Game Master Screen to fade out. Use 0 for instant.</p>
+    </div>
+  </fieldset>
+
+  <footer class="sheet-footer gms-footer">
+    <button type="button" class="gms-preview"><i class="fa-solid fa-eye"></i> Preview</button>
+    <button type="submit"><i class="fa-solid fa-save"></i> Save</button>
+  </footer>
+</div>
