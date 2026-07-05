@@ -1,0 +1,19 @@
+<div class="gms-presets-list">
+  {{#if hasPresets}}
+    {{#each presets}}
+      <div class="gms-preset-row">
+        <span class="gms-preset-name">{{this.name}}</span>
+        <div class="gms-preset-actions">
+          <a data-action="renamePreset" data-preset-id="{{this.id}}" title="Rename">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </a>
+          <a data-action="deletePreset" data-preset-id="{{this.id}}" title="Delete">
+            <i class="fa-solid fa-trash"></i>
+          </a>
+        </div>
+      </div>
+    {{/each}}
+  {{else}}
+    <p class="hint">No presets saved yet. Use "Save as Preset" in Game Master Screen — Settings to create one.</p>
+  {{/if}}
+</div>

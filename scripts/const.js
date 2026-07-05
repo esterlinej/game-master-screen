@@ -24,6 +24,14 @@ export const MEDIA_FITS = {
   ORIGINAL: "original"
 };
 
+/** GM popout size options */
+export const POPOUT_SIZES = {
+  SMALL: "small",
+  MEDIUM: "medium",
+  LARGE: "large",
+  XL: "xl"
+};
+
 /** Setting keys */
 export const SETTINGS = {
   MEDIA_MODE: "mediaMode",       // "single" | "list" | "video" — see MEDIA_MODES
@@ -46,6 +54,22 @@ export const SETTINGS = {
   FADE_OUT: "fadeOut",           // ms
 
   TRIGGER_ON_SCENE_ACTIVATION: "triggerOnSceneActivation", // bool
+
+  PRESETS: "presets", // world-scope — array of { id, name, values }; shared
+                       // across global Settings, future per-scene Override,
+                       // and the future Profile toolbar tool, all reading
+                       // from the same list rather than three separate ones
+
+  POPOUT_SIZE: "popoutSize", // client-scope — each GM's own display preference,
+                              // not shared world config (a second-monitor GM
+                              // setup might reasonably want a different size
+                              // than the primary GM's own screen)
+
+  POPOUT_AUDIO: "popoutAudio", // client-scope — off by default, since a GM
+                                // sharing a room with players already hears
+                                // their audio; mainly useful for fully remote
+                                // tables where the GM has no other way to
+                                // confirm ambience is actually playing
 
   GMS_ACTIVE: "gmsActive",       // world-scope state flag, not user-facing config
   GMS_ACTIVE_MEDIA: "gmsActiveMedia", // world-scope — the media payload currently

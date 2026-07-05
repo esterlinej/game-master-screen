@@ -1,5 +1,6 @@
 import { MODULE_ID, SETTINGS, MEDIA_MODES, MEDIA_FITS } from "./const.js";
 import { showOverlay } from "./overlay.js";
+import { GMSPresetsManagerApp } from "./presets-manager-app.js";
 
 const { HandlebarsApplicationMixin, ApplicationV2 } = foundry.applications.api;
 
@@ -25,11 +26,24 @@ export class GMSSettingsApp extends HandlebarsApplicationMixin(ApplicationV2) {
     form: { template: `modules/${MODULE_ID}/templates/settings.hbs` }
   };
 
+  constructor(options = {}) {
+    super(options);
+    // Keeps the preset dropdown in sync if a preset is renamed/deleted via
+    // the Presets Manager while this form is also open.
+    this._presetsHookId = Hooks.on(`${MODULE_ID}.presetsChanged`, () => this.render(true));
+  }
+
+  async close(options) {
+    Hooks.off(`${MODULE_ID}.presetsChanged`, this._presetsHookId);
+    return super.close(options);
+  }
+
   async _prepareContext() {
     const mode = game.settings.get(MODULE_ID, SETTINGS.MEDIA_MODE);
     const fit = game.settings.get(MODULE_ID, SETTINGS.MEDIA_FIT);
     const imageList = game.settings.get(MODULE_ID, SETTINGS.IMAGE_LIST) ?? [];
     return {
+      presets: game.settings.get(MODULE_ID, SETTINGS.PRESETS) ?? [],
       isSingle: mode === MEDIA_MODES.SINGLE,
       isList: mode === MEDIA_MODES.LIST,
       isVideo: mode === MEDIA_MODES.VIDEO,
@@ -64,9 +78,10 @@ export class GMSSettingsApp extends HandlebarsApplicationMixin(ApplicationV2) {
     });
 
     // Live show/hide of the mode-specific sections only — the universal
-    // Media/Timing Configuration fieldsets (class gms-universal) are never
-    // toggled here, since they apply regardless of which mode is selected.
-    const applyMode = (mode) => {
+    // fieldsets (class gms-universal) are never toggled here, since they
+    // apply regardless of which mode is selected. Exposed on `this` so
+    // preset-loading can call it too after swapping the mode radio.
+    this._applyMode = (mode) => {
       this.element.querySelectorAll(".gms-section").forEach((section) => {
         section.classList.toggle("gms-hidden", section.dataset.mode !== mode);
       });
@@ -74,10 +89,10 @@ export class GMSSettingsApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     const radios = this.element.querySelectorAll('input[name="mediaMode"]');
     radios.forEach((radio) => {
-      radio.addEventListener("change", () => applyMode(radio.value));
+      radio.addEventListener("change", () => this._applyMode(radio.value));
     });
-    const checked = this.element.querySelector('input[name="mediaMode"]:checked');
-    applyMode(checked?.value ?? MEDIA_MODES.SINGLE);
+    const checkedRadio = this.element.querySelector('input[name="mediaMode"]:checked');
+    this._applyMode(checkedRadio?.value ?? MEDIA_MODES.SINGLE);
 
     // Browse buttons — foundry.applications.apps.FilePicker.implementation
     // is the officially-supported getter for whichever FilePicker class is
@@ -113,16 +128,99 @@ export class GMSSettingsApp extends HandlebarsApplicationMixin(ApplicationV2) {
       showOverlay(mediaData, { preview: true });
     });
 
-    // Live percentage readout next to the volume slider
+    // Live percentage readout next to the volume slider. Exposed on `this`
+    // so preset-loading can refresh it after setting the slider's value.
     const volumeInput = this.element.querySelector('input[name="volume"]');
     const volumeLabel = this.element.querySelector(".gms-volume-value");
-    volumeInput?.addEventListener("input", () => {
-      volumeLabel.textContent = `${volumeInput.value}%`;
+    this._updateVolumeLabel = () => {
+      if (volumeInput && volumeLabel) volumeLabel.textContent = `${volumeInput.value}%`;
+    };
+    volumeInput?.addEventListener("input", () => this._updateVolumeLabel());
+
+    // Preset dropdown — loads a saved preset's values into the form live,
+    // in-memory only. Nothing is persisted as the active global default
+    // until Save is actually clicked, same as any other field edit.
+    this.element.querySelector(".gms-preset-select")?.addEventListener("change", (event) => {
+      const id = event.target.value;
+      if (!id) return; // "— Custom —" selected, nothing to load
+      const presets = game.settings.get(MODULE_ID, SETTINGS.PRESETS) ?? [];
+      const preset = presets.find((p) => p.id === id);
+      if (preset) this._applyValuesToForm(preset.values);
+    });
+
+    // Opens the standalone Presets Manager for rename/delete.
+    this.element.querySelector(".gms-manage-presets")?.addEventListener("click", () => {
+      new GMSPresetsManagerApp().render(true);
+    });
+
+    // Save as Preset — captures the form's current raw values (not the
+    // resolved Preview payload) under a name, so the mode/list/randomize
+    // choices are preserved exactly rather than collapsed into one
+    // resolved outcome. Context-aware: if a preset is currently selected
+    // in the dropdown, offers to update it in place rather than only ever
+    // creating a new one — Save itself stays simple (always commits as the
+    // global default, regardless of preset selection); this button is
+    // where preset-specific update-vs-create lives instead.
+    this.element.querySelector(".gms-save-preset")?.addEventListener("click", async () => {
+      const selectedId = this.element.querySelector(".gms-preset-select")?.value;
+      const presets = game.settings.get(MODULE_ID, SETTINGS.PRESETS) ?? [];
+      const selectedPreset = selectedId ? presets.find((p) => p.id === selectedId) : null;
+
+      let mode = "create";
+      if (selectedPreset) {
+        mode = await foundry.applications.api.DialogV2.wait({
+          window: { title: "Save as Preset" },
+          content: `<p>Update the existing preset "<strong>${selectedPreset.name}</strong>", or save these values as a new preset?</p>`,
+          buttons: [
+            { action: "update", label: `Update "${selectedPreset.name}"`, default: true },
+            { action: "create", label: "Save as New Preset..." }
+          ],
+          rejectClose: false
+        });
+        if (!mode) return; // dialog dismissed
+      }
+
+      if (mode === "update") {
+        selectedPreset.values = this._gatherRawFormValues();
+        await game.settings.set(MODULE_ID, SETTINGS.PRESETS, presets);
+        Hooks.callAll(`${MODULE_ID}.presetsChanged`);
+        ui.notifications.info(`Updated preset "${selectedPreset.name}".`);
+        return;
+      }
+
+      const name = await foundry.applications.api.DialogV2.prompt({
+        window: { title: "Save as Preset" },
+        content: `
+          <div class="form-group">
+            <label>Preset Name</label>
+            <div class="form-fields">
+              <input type="text" name="presetName" autofocus required />
+            </div>
+          </div>`,
+        ok: {
+          label: "Save",
+          callback: (evt, button) => button.form.elements.presetName?.value?.trim() || null
+        },
+        rejectClose: false
+      });
+      if (!name) return;
+
+      presets.push({
+        id: foundry.utils.randomID(),
+        name,
+        values: this._gatherRawFormValues()
+      });
+      await game.settings.set(MODULE_ID, SETTINGS.PRESETS, presets);
+      Hooks.callAll(`${MODULE_ID}.presetsChanged`);
+      ui.notifications.info(`Saved preset "${name}".`);
     });
   }
 
   /** Reads the form's current (possibly unsaved) values into the same
-   *  shape buildMediaPayload() produces, for the Preview button. */
+   *  shape buildMediaPayload() produces, for the Preview button. This is
+   *  a RESOLVED/display-ready payload (rotation shuffled, mode collapsed
+   *  into type+images) — not suitable for round-tripping back into the
+   *  form, which is what _gatherRawFormValues() below is for instead. */
   _gatherFormMedia() {
     const el = this.element;
     const val = (name) => el.querySelector(`[name="${name}"]`)?.value ?? "";
@@ -154,6 +252,70 @@ export class GMSSettingsApp extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     return { ...universal, type: "image", images: [val("imagePath")], rotateInterval: null };
+  }
+
+  /** Reads the form's current raw field values, one-to-one with the
+   *  SETTINGS keys — the shape a preset is stored as, and round-trips
+   *  cleanly back into the form via _applyValuesToForm() below. Excludes
+   *  triggerOnSceneActivation deliberately: that's a structural on/off for
+   *  the whole automatic-trigger feature, not part of "which look" a
+   *  preset represents. */
+  _gatherRawFormValues() {
+    const el = this.element;
+    const val = (name) => el.querySelector(`[name="${name}"]`)?.value ?? "";
+    const isChecked = (name) => !!el.querySelector(`[name="${name}"]`)?.checked;
+
+    return {
+      mediaMode: el.querySelector('input[name="mediaMode"]:checked')?.value ?? MEDIA_MODES.SINGLE,
+      imagePath: val("imagePath"),
+      imageList: val("imageList"),
+      rotateInterval: Number(val("rotateInterval")) || 10,
+      randomizeOrder: isChecked("randomizeOrder"),
+      videoPath: val("videoPath"),
+      audioPath: val("audioPath"),
+      mediaFit: val("mediaFit") || MEDIA_FITS.CONTAIN,
+      loopMedia: isChecked("loopMedia"),
+      muteAudio: isChecked("muteAudio"),
+      volume: Number(val("volume")) || 0,
+      duration: Number(val("duration")) || 0,
+      fadeIn: Number(val("fadeIn")) || 0,
+      fadeOut: Number(val("fadeOut")) || 0
+    };
+  }
+
+  /** Reverse of _gatherRawFormValues() — pushes a saved preset's values
+   *  back into the form's actual fields, then re-runs the mode-visibility
+   *  and volume-label logic so the UI reflects the load immediately. */
+  _applyValuesToForm(values) {
+    const el = this.element;
+    const setVal = (name, v) => {
+      const field = el.querySelector(`[name="${name}"]`);
+      if (field) field.value = v;
+    };
+    const setChecked = (name, v) => {
+      const field = el.querySelector(`[name="${name}"]`);
+      if (field) field.checked = !!v;
+    };
+
+    const modeRadio = el.querySelector(`input[name="mediaMode"][value="${values.mediaMode}"]`);
+    if (modeRadio) modeRadio.checked = true;
+
+    setVal("imagePath", values.imagePath ?? "");
+    setVal("imageList", values.imageList ?? "");
+    setVal("rotateInterval", values.rotateInterval ?? 10);
+    setChecked("randomizeOrder", values.randomizeOrder);
+    setVal("videoPath", values.videoPath ?? "");
+    setVal("audioPath", values.audioPath ?? "");
+    setVal("mediaFit", values.mediaFit ?? MEDIA_FITS.CONTAIN);
+    setChecked("loopMedia", values.loopMedia);
+    setChecked("muteAudio", values.muteAudio);
+    setVal("volume", values.volume ?? 50);
+    setVal("duration", values.duration ?? 0);
+    setVal("fadeIn", values.fadeIn ?? 0);
+    setVal("fadeOut", values.fadeOut ?? 0);
+
+    this._applyMode?.(values.mediaMode ?? MEDIA_MODES.SINGLE);
+    this._updateVolumeLabel?.();
   }
 
   static async #onSubmit(event, form, formData) {

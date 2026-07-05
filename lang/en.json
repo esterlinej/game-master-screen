@@ -6,5 +6,11 @@
   "GMS.Settings.Title": "Game Master Screen — Settings",
   "GMS.Settings.Hint": "Configure the media shown when Game Master Screen is triggered.",
   "GMS.Settings.DebugName": "Debug Logging",
-  "GMS.Settings.DebugHint": "Shows on-screen notifications (in addition to console logs) confirming Game Master Screen's socket events and lifecycle hooks are firing on this client. Useful for troubleshooting without needing to check the browser console."
+  "GMS.Settings.DebugHint": "Shows on-screen notifications (in addition to console logs) confirming Game Master Screen's socket events and lifecycle hooks are firing on this client. Useful for troubleshooting without needing to check the browser console.",
+  "GMS.Settings.PopoutSizeName": "GM Popout Size",
+  "GMS.Settings.PopoutSizeHint": "How large the Game Master Screen preview pane appears on your own screen when active. This is a personal display preference — it doesn't affect what players see, and each GM account can set their own.",
+  "GMS.Settings.PopoutAudioName": "GM Popout Audio",
+  "GMS.Settings.PopoutAudioHint": "Play audio in your own GM preview pane too. Off by default — if you're in the same room as your players, you already hear their audio, so this mainly helps for fully remote tables where you have no other way to confirm ambience is actually playing.",
+  "GMS.Presets.Title": "Game Master Screen — Presets",
+  "GMS.Presets.Hint": "Manage saved Game Master Screen presets — rename or delete existing ones. Create new presets from the \"Save as Preset\" button in Settings."
 }

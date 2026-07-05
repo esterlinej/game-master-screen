@@ -1,4 +1,20 @@
 <div class="gms-settings-form">
+  <div class="form-group gms-preset-row">
+    <label>Preset</label>
+    <div class="form-fields">
+      <select class="gms-preset-select">
+        <option value="">— Custom —</option>
+        {{#each presets}}
+          <option value="{{this.id}}">{{this.name}}</option>
+        {{/each}}
+      </select>
+      <button type="button" class="gms-manage-presets" title="Manage Presets">
+        <i class="fa-solid fa-list"></i>
+      </button>
+    </div>
+    <p class="hint">Load a saved preset into the fields below, or configure fresh and use "Save as Preset" below to save your own.</p>
+  </div>
+
   <div class="form-group gms-mode-select">
     <label>Media Mode</label>
     <div class="form-fields gms-radio-group">
@@ -153,6 +169,7 @@
 
   <footer class="sheet-footer gms-footer">
     <button type="button" class="gms-preview"><i class="fa-solid fa-eye"></i> Preview</button>
+    <button type="button" class="gms-save-preset"><i class="fa-solid fa-bookmark"></i> Save as Preset</button>
     <button type="submit"><i class="fa-solid fa-save"></i> Save</button>
   </footer>
 </div>

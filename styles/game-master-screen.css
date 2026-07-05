@@ -48,6 +48,36 @@
   font-variant-numeric: tabular-nums;
 }
 
+.gms-settings-form .gms-preset-row .form-fields {
+  display: flex;
+  gap: 8px;
+}
+
+.gms-settings-form .gms-preset-row select {
+  flex: 1;
+}
+
+.gms-presets-manager .gms-preset-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.gms-presets-manager .gms-preset-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.gms-presets-manager .gms-preset-actions a {
+  cursor: pointer;
+}
+
+.gms-presets-manager .gms-preset-actions a:hover {
+  color: #ff9900;
+}
+
 /* Settings form */
 .gms-settings-form .gms-radio-group {
   display: flex;
@@ -104,7 +134,6 @@
    CSS anchor, so left/top below are just fallback/initial values. */
 #gms-popout {
   position: fixed;
-  width: 390px;
   z-index: 100000;
   background: rgba(20, 20, 20, 0.92);
   border: 1px solid #666;
@@ -114,6 +143,22 @@
   font-family: var(--font-primary, sans-serif);
   overflow: hidden;
   pointer-events: auto;
+}
+
+#gms-popout.gms-popout-small {
+  width: 220px;
+}
+
+#gms-popout.gms-popout-medium {
+  width: 390px;
+}
+
+#gms-popout.gms-popout-large {
+  width: 650px;
+}
+
+#gms-popout.gms-popout-xl {
+  width: 950px;
 }
 
 #gms-popout .gms-popout-header {
@@ -141,8 +186,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  max-height: 240px;
   overflow: hidden;
+}
+
+#gms-popout.gms-popout-small .gms-popout-body {
+  max-height: 140px;
+}
+
+#gms-popout.gms-popout-medium .gms-popout-body {
+  max-height: 240px;
+}
+
+#gms-popout.gms-popout-large .gms-popout-body {
+  max-height: 400px;
+}
+
+#gms-popout.gms-popout-xl .gms-popout-body {
+  max-height: 580px;
 }
 
 #gms-popout .gms-popout-body img,
