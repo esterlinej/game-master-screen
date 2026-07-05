@@ -14,7 +14,9 @@ export class GMSPresetsManagerApp extends HandlebarsApplicationMixin(Application
     position: { width: 420, height: "auto" },
     actions: {
       renamePreset: GMSPresetsManagerApp._onRename,
-      deletePreset: GMSPresetsManagerApp._onDelete
+      deletePreset: GMSPresetsManagerApp._onDelete,
+      moveUp: GMSPresetsManagerApp._onMoveUp,
+      moveDown: GMSPresetsManagerApp._onMoveDown
     }
   };
 
@@ -83,6 +85,30 @@ export class GMSPresetsManagerApp extends HandlebarsApplicationMixin(Application
 
     const updated = presets.filter((p) => p.id !== id);
     await game.settings.set(MODULE_ID, SETTINGS.PRESETS, updated);
+    Hooks.callAll(`${MODULE_ID}.presetsChanged`);
+  }
+
+  /**
+   * Array position IS display order — both here and in the Presets toolbar
+   * popup, which renders in this same stored order. Reordering is nothing
+   * more than a splice-and-resave; no separate sort-index field needed.
+   */
+  static async _onMoveUp(_event, target) {
+    await GMSPresetsManagerApp._move(target.dataset.presetId, -1);
+  }
+
+  static async _onMoveDown(_event, target) {
+    await GMSPresetsManagerApp._move(target.dataset.presetId, 1);
+  }
+
+  static async _move(id, delta) {
+    const presets = game.settings.get(MODULE_ID, SETTINGS.PRESETS) ?? [];
+    const index = presets.findIndex((p) => p.id === id);
+    const target = index + delta;
+    if (index === -1 || target < 0 || target >= presets.length) return;
+
+    [presets[index], presets[target]] = [presets[target], presets[index]];
+    await game.settings.set(MODULE_ID, SETTINGS.PRESETS, presets);
     Hooks.callAll(`${MODULE_ID}.presetsChanged`);
   }
 }

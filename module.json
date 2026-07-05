@@ -2,7 +2,7 @@
   "id": "game-master-screen",
   "title": "Game Master Screen",
   "description": "A full-screen GM-controlled overlay for pauses, intermissions, and scene loading. Trigger manually, with a compact GM-side popout that doesn't block board management.",
-  "version": "0.3.4",
+  "version": "0.4.0",
   "compatibility": {
     "minimum": "13",
     "verified": "14"

@@ -1,5 +1,6 @@
 import { showGameMasterScreen, closeGameMasterScreen } from "./core.js";
 import { GMSSettingsApp } from "./settings-app.js";
+import { GMSPresetsPlayApp } from "./presets-play-app.js";
 
 /**
  * V13+ getSceneControlButtons: `controls` is an object keyed by control
@@ -25,11 +26,20 @@ export function registerSceneControls() {
             visible: game.user.isGM,
             onChange: () => showGameMasterScreen()
           },
+          presets: {
+            name: "presets",
+            title: "GMS.Controls.Presets",
+            icon: "fa-solid fa-list",
+            order: 1,
+            button: true,
+            visible: game.user.isGM,
+            onChange: () => new GMSPresetsPlayApp().render(true)
+          },
           close: {
             name: "close",
             title: "GMS.Controls.Close",
             icon: "fa-solid fa-stop",
-            order: 1,
+            order: 2,
             button: true,
             visible: game.user.isGM,
             onChange: () => closeGameMasterScreen()
@@ -38,7 +48,7 @@ export function registerSceneControls() {
             name: "settings",
             title: "GMS.Controls.Settings",
             icon: "fa-solid fa-gear",
-            order: 2,
+            order: 3,
             button: true,
             visible: game.user.isGM,
             onChange: () => new GMSSettingsApp().render(true)

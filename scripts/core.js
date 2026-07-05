@@ -17,8 +17,16 @@ let triggering = false;
  * near-simultaneous calls (e.g. rapid scene activations) could both read
  * "not active yet" before either write resolves. Setting `triggering`
  * synchronously, before any await, closes that window immediately.
+ *
+ * `mediaDataOverride`, when provided, is used as-is instead of resolving
+ * the current global-default settings — this is what lets the Presets
+ * toolbar tool fire a preset's config directly as a one-off, ephemeral
+ * override. It still goes through the normal broadcast/persist-for-late-
+ * join/render path below, since players still need to actually see it;
+ * the only thing skipped is reading (and thus depending on) the world's
+ * persisted media-mode settings.
  */
-export async function showGameMasterScreen() {
+export async function showGameMasterScreen(mediaDataOverride = null) {
   if (triggering || game.settings.get(MODULE_ID, SETTINGS.GMS_ACTIVE)) {
     ui.notifications.info("Game Master Screen is already active.");
     return;
@@ -26,7 +34,7 @@ export async function showGameMasterScreen() {
   triggering = true;
 
   try {
-    const mediaData = await buildMediaPayload();
+    const mediaData = mediaDataOverride ?? await buildMediaPayload();
 
     // Persisted alongside the flag — this is what lets a client connecting
     // mid-GMS (late join, reload, reconnect) catch itself up on `ready`

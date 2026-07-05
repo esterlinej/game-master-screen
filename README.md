@@ -33,8 +33,11 @@ mode is active:
 
 **Presets** — save named configurations and reload them instantly, update
 an existing preset in place, or save variations as new ones. Manage
-(rename/delete) from a dedicated Presets app, reachable from Settings or
-from core Foundry's own Settings menu.
+(rename/reorder/delete) from a dedicated Presets app, reachable from
+Settings or from core Foundry's own Settings menu. A separate **Trigger
+Preset** scene-controls tool fires any saved preset directly as a one-off
+override — it doesn't touch or read the persisted global-default
+settings, so it never overwrites your configured look.
 
 **GM experience**
 - A small, draggable, non-blocking preview pane (not a full-screen
@@ -80,10 +83,15 @@ or download and extract into your `Data/modules` folder.
 ## Usage
 
 **Scene Controls** — a new "Game Master Screen" category appears in the
-left-hand scene controls toolbar for GMs, with three tools:
+left-hand scene controls toolbar for GMs, with four tools:
 - **Trigger** — fires Game Master Screen using the currently configured
   media. Safe to click even if it's already active (no-ops with a
   notification rather than double-firing).
+- **Trigger Preset** — opens a small popup listing saved presets by name,
+  in the same order they're arranged in the Presets Manager. Clicking one
+  fires Game Master Screen with that preset's config immediately, then
+  closes the popup. Ephemeral — it's a one-off override for that single
+  trigger and never reads or changes the global-default Settings.
 - **Close** — ends it for everyone, from any GM account. Safe to click
   even if nothing's active; this is the "nuke" button for recovering
   from a crash or a stuck state.
@@ -97,6 +105,10 @@ and the automatic scene-activation trigger. Includes:
 - **Save as Preset** — captures the current form values under a name.
   If a preset is already selected in the dropdown, offers to update it
   in place instead of only creating new ones.
+
+**Presets Manager** — rename, reorder (up/down arrows), or delete saved
+presets. Reordering here also controls the order presets appear in the
+Trigger Preset popup.
 
 **Personal preferences** (Foundry's core Settings list, per GM account):
 - **GM Popout Size** — Small, Medium, Large, or Extra Large
@@ -142,8 +154,6 @@ an issue.
   scene to Inherit (use global default), Override (its own media/timing
   config), or Disable (never trigger on this scene, regardless of the
   global auto-trigger setting)
-- **Profile toolbar tool** — a dedicated scene-controls button to
-  instantly trigger a specific saved preset, without opening Settings
 
 **Considered and shelved for now:** hijacking Foundry's native
 spacebar-pause to also show Game Master Screen. The convenience of one

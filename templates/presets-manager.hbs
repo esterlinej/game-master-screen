@@ -2,6 +2,14 @@
   {{#if hasPresets}}
     {{#each presets}}
       <div class="gms-preset-row">
+        <div class="gms-preset-reorder">
+          <a data-action="moveUp" data-preset-id="{{this.id}}" title="Move Up" class="{{#if @first}}gms-disabled{{/if}}">
+            <i class="fa-solid fa-chevron-up"></i>
+          </a>
+          <a data-action="moveDown" data-preset-id="{{this.id}}" title="Move Down" class="{{#if @last}}gms-disabled{{/if}}">
+            <i class="fa-solid fa-chevron-down"></i>
+          </a>
+        </div>
         <span class="gms-preset-name">{{this.name}}</span>
         <div class="gms-preset-actions">
           <a data-action="renamePreset" data-preset-id="{{this.id}}" title="Rename">

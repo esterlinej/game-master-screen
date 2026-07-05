@@ -78,6 +78,59 @@
   color: #ff9900;
 }
 
+.gms-presets-manager .gms-preset-reorder {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-right: 8px;
+}
+
+.gms-presets-manager .gms-preset-reorder a {
+  cursor: pointer;
+  font-size: 11px;
+  line-height: 1;
+}
+
+.gms-presets-manager .gms-preset-reorder a:hover {
+  color: #ff9900;
+}
+
+.gms-presets-manager a.gms-disabled {
+  opacity: 0.25;
+  pointer-events: none;
+  cursor: default;
+}
+
+/* Presets Play popup — click-to-fire list, styled as a lighter-weight
+   sibling of the Presets Manager rows above rather than a new pattern. */
+.gms-presets-play .gms-presets-list {
+  padding: 6px;
+}
+
+.gms-presets-play .gms-preset-row {
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  margin-bottom: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.gms-presets-play .gms-preset-row:last-child {
+  margin-bottom: 0;
+}
+
+.gms-presets-play .gms-preset-row:hover {
+  background: rgba(255, 153, 0, 0.15);
+  border-color: rgba(255, 153, 0, 0.4);
+}
+
+.gms-presets-play .gms-preset-name {
+  flex: 1;
+  font-size: 14px;
+}
+
 /* Settings form */
 .gms-settings-form .gms-radio-group {
   display: flex;
