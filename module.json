@@ -31,6 +31,6 @@
   ],
   "url": "https://github.com/esterlinej/game-master-screen",
   "manifest": "https://raw.githubusercontent.com/esterlinej/game-master-screen/main/module.json",
-  "download": "https://github.com/esterlinej/game-master-screen/archive/refs/heads/main.zip",
+  "download": "https://github.com/esterlinej/game-master-screen/archive/refs/tags/v1.0.0.zip",
   "license": "LICENSE"
 }
