@@ -1,5 +1,6 @@
-import { MODULE_ID, SETTINGS, debug } from "./const.js";
+import { MODULE_ID, SETTINGS, SCENE_MODES, debug } from "./const.js";
 import { showGameMasterScreen } from "./core.js";
+import { getSceneGmsMode, resolveSceneOverridePayload } from "./scene-config-tab.js";
 
 let pausedPlaylistId = null;
 
@@ -20,11 +21,40 @@ let pausedPlaylistId = null;
  * Foundry's own scene-load flicker before this overlay fully covers it —
  * a real but minor visual tradeoff of the simpler reactive approach,
  * versus proactively wrapping the Activate action itself.
+ *
+ * Per-scene mode (Inherit/Override/Disable, set via the Scene Config tab)
+ * is checked before anything else: Disable means GMS never triggers for
+ * this scene, full stop — global auto-trigger setting or not, and no
+ * playlist silencing either, since nothing is showing to cover the audio
+ * gap. Override resolves the scene's own saved values instead of the
+ * global default. Inherit (or no scene flag at all) is today's behavior.
  */
 export function registerSceneActivationTrigger() {
   Hooks.on("updateScene", (scene, changes) => {
     if (!game.user.isGM) return;
     if (changes.active !== true) return;
+
+    const mode = getSceneGmsMode(scene);
+    if (mode === SCENE_MODES.DISABLE) {
+      debug(`scene "${scene.name}" activated — GMS disabled for this scene, skipping entirely`);
+      return;
+    }
+
+    // Override is this scene's own explicit "always fire here" choice —
+    // independent of the global toggle, which only governs Inherit's
+    // default behavior. Gating Override behind the same toggle meant for
+    // the global default made it impossible to have GMS fire on this one
+    // scene without also turning on auto-trigger everywhere else.
+    if (mode === SCENE_MODES.OVERRIDE) {
+      const overridePayload = resolveSceneOverridePayload(scene);
+      debug(`scene "${scene.name}" activated — auto-triggering with scene Override config`);
+      showGameMasterScreen(overridePayload);
+      armPlaylistSilencing(scene);
+      return;
+    }
+
+    // Inherit (or no scene flag at all) — this is the actual behavior the
+    // global toggle controls.
     if (!game.settings.get(MODULE_ID, SETTINGS.TRIGGER_ON_SCENE_ACTIVATION)) return;
 
     debug(`scene "${scene.name}" activated — auto-triggering Game Master Screen`);

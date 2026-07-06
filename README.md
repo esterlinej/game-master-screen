@@ -4,16 +4,25 @@ A Foundry VTT module for a full-screen, GM-controlled overlay — for pauses,
 intermissions, and scene transitions — with a compact, non-blocking GM
 preview pane so triggering it never gets in the way of running the game.
 
+![Game Master Screen active — the full-screen player overlay alongside the GM's compact preview pane](assets/images/gms-active-window-and-player-window.png)
+
+📸 **[Visual Guide](docs/GUIDE.md)** — screenshots of every part of the
+module, if you'd rather look than read.
+
 ---
 
 ## Features
 
-**Two ways to trigger**
+**Three ways to trigger**
 - **Manual** — a scene-controls toolbar button. Fire it anytime: a five
   minute break, a dramatic reveal, whatever the moment calls for.
+- **Trigger Preset** — a separate toolbar button that fires any saved
+  preset directly, as a one-off override that never touches the
+  global-default Settings.
 - **Automatic on Scene Activation** — optionally shows Game Master Screen
   whenever a GM activates a scene (the "Activate" button, not just
-  viewing it), using whatever media is currently configured.
+  viewing it), using whatever media is currently configured (or that
+  scene's own Override, if it has one — see Per-Scene Overrides below).
 
 **Three media modes**
 - **Single Image**
@@ -121,6 +130,45 @@ Trigger Preset popup.
 
 ---
 
+## Per-Scene Overrides
+
+Every scene's own Configure Sheet gets a new **Game Master Screen** tab,
+alongside Basics/Grid/Lighting/etc.:
+- **Inherit** (default) — plays whatever the global config is set to when
+  this scene is activated. Requires the global "Trigger on Scene
+  Activation" setting to be on, same as if this tab didn't exist.
+- **Override** — this scene uses its own media/timing config instead of
+  the global default, and always fires on activation regardless of the
+  global "Trigger on Scene Activation" toggle — it's this scene's own
+  explicit choice, not something the global default setting governs.
+  Optionally load a saved preset's values into the fields as a starting
+  point (this scene's override stays its own independent copy afterward
+  — it isn't kept linked to the preset).
+- **Disable** — Game Master Screen never triggers for this scene, full
+  stop, regardless of the global "Trigger on Scene Activation" setting.
+
+If [Scene Loading Screens](https://github.com/DeadPanMatt/Scene-Loading-Screens)
+is already configured on a scene, this tab defaults to Disabled the
+first time you open it for that scene — a soft default, not a lock, so
+you can still switch to Override or Inherit if you'd rather GMS win for
+that particular scene.
+
+---
+
+## Roadmap
+
+Both planned features (per-scene overrides and the Trigger Preset
+toolbar tool) have shipped. No further items currently planned — open
+an issue if you run into something worth adding.
+
+**Considered and shelved for now:** hijacking Foundry's native
+spacebar-pause to also show Game Master Screen. The convenience of one
+fewer click didn't outweigh the risk of an accidental spacebar press
+triggering a full-screen overlay for every player, versus today's small
+UX cost of a single deliberate Trigger click.
+
+---
+
 ## Compatibility Notes
 
 Game Master Screen's automatic "Trigger on Scene Activation" feature can
@@ -136,30 +184,15 @@ change. Known potentially-overlapping modules:
   switch by default. Higher chance of collision than the above, since it
   auto-triggers rather than requiring a manual action.
 
-If you use either alongside GMS, consider disabling GMS's automatic
-scene-activation trigger for scenes that already have a loading screen
-configured in one of those modules (or leave GMS on manual-trigger only).
-A future release may add automatic detection/deference for scenes that
-already have a competing module's config present.
+If you use either alongside GMS, the per-scene Game Master Screen tab
+(see [Per-Scene Overrides](#per-scene-overrides) above) automatically
+defaults a scene to Disabled the first time you open its config if Scene
+Loading Screens is configured there — no manual setup needed for the
+common case, though you can still override that default per scene.
 
 This list isn't exhaustive — if you run into a conflict with another
 scene-loading or intermission-style module not listed here, please open
 an issue.
-
----
-
-## Roadmap
-
-- **Per-scene overrides** — a dedicated Scene Configuration tab to set a
-  scene to Inherit (use global default), Override (its own media/timing
-  config), or Disable (never trigger on this scene, regardless of the
-  global auto-trigger setting)
-
-**Considered and shelved for now:** hijacking Foundry's native
-spacebar-pause to also show Game Master Screen. The convenience of one
-fewer click didn't outweigh the risk of an accidental spacebar press
-triggering a full-screen overlay for every player, versus today's small
-UX cost of a single deliberate Trigger click.
 
 ---
 

@@ -131,6 +131,39 @@
   font-size: 14px;
 }
 
+/* Generic hidden-state utility — used across several injected elements
+   (auto-trigger warning, scene override block, media-mode sections).
+   !important guards against a more-specific rule (like .gms-sls-hint's
+   own display: flex) silently winning and making the class a no-op —
+   the exact bug this fixes: the class was toggling correctly in JS the
+   whole time, but nothing ever defined what "hidden" means for
+   .gms-auto-trigger-warning specifically, so it stayed visible. */
+.gms-hidden {
+  display: none !important;
+}
+
+/* Injected Scene Config tab */
+.gms-scene-config-tab {
+  padding: 4px 2px;
+}
+
+.gms-scene-config-tab .gms-scene-override {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.gms-scene-config-tab .gms-scene-override.gms-hidden {
+  display: none;
+}
+
+.gms-scene-config-tab .gms-sls-hint {
+  color: #ffb454;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
 /* Settings form */
 .gms-settings-form .gms-radio-group {
   display: flex;

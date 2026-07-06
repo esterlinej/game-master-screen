@@ -32,6 +32,31 @@ export const POPOUT_SIZES = {
   XL: "xl"
 };
 
+/**
+ * Per-scene override flag — stored as scene.flags["game-master-screen"].sceneConfig
+ * = { mode: "inherit" | "override" | "disable", values: {...} }. `values` is the
+ * same raw shape presets and global settings use, so Override can reuse
+ * resolvePresetPayload() with zero new parsing.
+ */
+export const SCENE_FLAG_KEY = "sceneConfig";
+
+export const SCENE_MODES = {
+  INHERIT: "inherit",  // use whatever the global default is at trigger time
+  OVERRIDE: "override", // use this scene's own values
+  DISABLE: "disable"   // never trigger GMS for this scene, full stop
+};
+
+/**
+ * Scene Loading Screens' own flag schema, confirmed against their public
+ * source (github.com/DeadPanMatt/Scene-Loading-Screens) — module id
+ * "scene-loading-screens", single flag key "loadingScreen" holding their
+ * config object (or absent/null if the scene has none configured). Used
+ * only to set our OWN per-scene mode's *default* when nothing has been
+ * explicitly chosen yet — never a hard lock, per design.
+ */
+export const SLS_MODULE_ID = "scene-loading-screens";
+export const SLS_FLAG_KEY = "loadingScreen";
+
 /** Setting keys */
 export const SETTINGS = {
   MEDIA_MODE: "mediaMode",       // "single" | "list" | "video" — see MEDIA_MODES

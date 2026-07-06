@@ -1,4 +1,4 @@
-import { MODULE_ID, SETTINGS, MEDIA_MODES } from "./const.js";
+import { MODULE_ID, SETTINGS, MEDIA_MODES, MEDIA_FITS } from "./const.js";
 
 /**
  * Pure resolver: takes a raw values object — one-to-one with the SETTINGS
@@ -99,6 +99,41 @@ export function resolvePresetPayload(values) {
     .map((line) => line.trim())
     .filter(Boolean);
   return resolveMediaPayload({ ...values, imageList });
+}
+
+/**
+ * Pure transform: takes a raw values object (the same shape presets/scene
+ * overrides store, and GMSSettingsApp#_gatherRawFormValues produces) and
+ * returns the template-context shape a field-rendering .hbs expects
+ * (isSingle/fitContain-style booleans plus display-ready field values).
+ * Fills in the same defaults GMSSettingsApp's own _prepareContext uses
+ * when a value is missing, so a freshly-created scene override with no
+ * prior values renders identically to a brand-new global config would.
+ */
+export function buildFieldContext(rawValues = {}) {
+  const mode = rawValues.mediaMode ?? MEDIA_MODES.SINGLE;
+  const fit = rawValues.mediaFit ?? MEDIA_FITS.CONTAIN;
+  return {
+    isSingle: mode === MEDIA_MODES.SINGLE,
+    isList: mode === MEDIA_MODES.LIST,
+    isVideo: mode === MEDIA_MODES.VIDEO,
+    imagePath: rawValues.imagePath ?? "",
+    imageListText: rawValues.imageList ?? "",
+    rotateInterval: rawValues.rotateInterval ?? 10,
+    randomizeOrder: !!rawValues.randomizeOrder,
+    videoPath: rawValues.videoPath ?? "",
+    audioPath: rawValues.audioPath ?? "",
+    fitContain: fit === MEDIA_FITS.CONTAIN,
+    fitCover: fit === MEDIA_FITS.COVER,
+    fitStretch: fit === MEDIA_FITS.STRETCH,
+    fitOriginal: fit === MEDIA_FITS.ORIGINAL,
+    loopMedia: !!rawValues.loopMedia,
+    muteAudio: !!rawValues.muteAudio,
+    volume: rawValues.volume ?? 50,
+    duration: rawValues.duration ?? 0,
+    fadeIn: rawValues.fadeIn ?? 0,
+    fadeOut: rawValues.fadeOut ?? 0
+  };
 }
 
 /** Fisher–Yates — operates on the copy passed in, returns it for convenience. */

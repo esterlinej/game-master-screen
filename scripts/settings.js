@@ -224,3 +224,30 @@ export function registerSettings() {
     });
   });
 }
+
+/**
+ * Snapshot of the current global-default config, in the same raw shape
+ * presets and scene overrides are stored as (imageList newline-joined,
+ * not an array). Used to seed a scene's Override values the first time a
+ * GM switches a scene to Override with nothing saved yet — friendlier
+ * than a blank form, and matches "Override starts from the current
+ * global look" as the obvious default starting point.
+ */
+export function getGlobalRawValues() {
+  return {
+    mediaMode: game.settings.get(MODULE_ID, SETTINGS.MEDIA_MODE),
+    imagePath: game.settings.get(MODULE_ID, SETTINGS.IMAGE_PATH),
+    imageList: (game.settings.get(MODULE_ID, SETTINGS.IMAGE_LIST) ?? []).join("\n"),
+    rotateInterval: game.settings.get(MODULE_ID, SETTINGS.ROTATE_INTERVAL),
+    randomizeOrder: game.settings.get(MODULE_ID, SETTINGS.RANDOMIZE_ORDER),
+    videoPath: game.settings.get(MODULE_ID, SETTINGS.VIDEO_PATH),
+    audioPath: game.settings.get(MODULE_ID, SETTINGS.AUDIO_PATH),
+    mediaFit: game.settings.get(MODULE_ID, SETTINGS.MEDIA_FIT),
+    loopMedia: game.settings.get(MODULE_ID, SETTINGS.LOOP_MEDIA),
+    muteAudio: game.settings.get(MODULE_ID, SETTINGS.MUTE_AUDIO),
+    volume: game.settings.get(MODULE_ID, SETTINGS.VOLUME),
+    duration: game.settings.get(MODULE_ID, SETTINGS.DURATION),
+    fadeIn: game.settings.get(MODULE_ID, SETTINGS.FADE_IN),
+    fadeOut: game.settings.get(MODULE_ID, SETTINGS.FADE_OUT)
+  };
+}
