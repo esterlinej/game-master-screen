@@ -1,0 +1,226 @@
+{{!-- NOTE: the Override fields block below (.gms-scene-override) is a
+deliberate near-duplicate of settings.hbs's field markup, with names
+prefixed via the `namePrefix`/`gmsField` pattern instead of settings.hbs's
+bare field names. Kept as a duplicate rather than a shared {{> partial}}
+because this template renders through a manual renderTemplate() call into
+Foundry's native Scene Config sheet, while settings.hbs renders through
+HandlebarsApplicationMixin's own PARTS pipeline — untested whether a
+{{> partial}} resolves identically across both paths, so duplication was
+the safer call. If you add/change a field in settings.hbs, mirror the
+change here too. --}}
+<div class="gms-settings-form gms-scene-config-tab">
+  <div class="form-group gms-mode-select">
+    <label>Game Master Screen</label>
+    <div class="form-fields gms-radio-group">
+      <label class="gms-radio">
+        <input type="radio" name="{{modeField}}" value="inherit" {{#if isInherit}}checked{{/if}} />
+        Inherit
+      </label>
+      <label class="gms-radio">
+        <input type="radio" name="{{modeField}}" value="override" {{#if isOverride}}checked{{/if}} />
+        Override
+      </label>
+      <label class="gms-radio">
+        <input type="radio" name="{{modeField}}" value="disable" {{#if isDisable}}checked{{/if}} />
+        Disable
+      </label>
+    </div>
+    <p class="hint">
+      <strong>Inherit</strong> plays whatever the global Game Master Screen
+      config is set to when this scene is activated. <strong>Override</strong>
+      does the same, but using this scene's own media/timing config below
+      instead of the global default. <strong>Disable</strong> means Game
+      Master Screen never triggers for this scene no matter what.
+    </p>
+    <p class="hint">
+      This tab only controls <em>what</em> happens on scene activation.
+      <strong>Inherit</strong> still requires the global "Trigger on Scene
+      Activation" toggle in Settings to be turned on before it fires.
+      <strong>Override</strong> is this scene's own explicit choice and
+      always fires on activation regardless of that toggle.
+      <strong>Disable</strong> always skips this scene regardless of it
+      too.
+    </p>
+    {{#if showAutoTriggerOffWarning}}
+      <p class="hint gms-sls-hint gms-auto-trigger-warning">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span>The global "Trigger on Scene Activation" setting is
+        currently <strong>off</strong> — Inherit won't do anything on
+        activation for this scene until that's turned on in Game Master
+        Screen — Settings.</span>
+      </p>
+    {{else}}
+      <p class="hint gms-sls-hint gms-auto-trigger-warning gms-hidden">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span>The global "Trigger on Scene Activation" setting is
+        currently <strong>off</strong> — Inherit won't do anything on
+        activation for this scene until that's turned on in Game Master
+        Screen — Settings.</span>
+      </p>
+    {{/if}}
+    {{#if slsIsDefaulting}}
+      <p class="hint gms-sls-hint">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        This scene has a Scene Loading Screens loading screen configured.
+        Game Master Screen defaults to Disabled here to avoid both showing
+        at once — switch to Override or Inherit above if you want Game
+        Master Screen to trigger instead.
+      </p>
+    {{/if}}
+  </div>
+
+  <div class="gms-scene-override {{#unless isOverride}}gms-hidden{{/unless}}">
+    <div class="form-group gms-preset-row">
+      <label>Load from Preset</label>
+      <div class="form-fields">
+        <select class="gms-preset-select">
+          <option value="">— Custom —</option>
+          {{#each presets}}
+            <option value="{{this.id}}">{{this.name}}</option>
+          {{/each}}
+        </select>
+      </div>
+      <p class="hint">Loads a saved preset's values into the fields below as a starting point — this scene's override is still its own independent copy and won't stay linked to the preset.</p>
+    </div>
+
+    <div class="form-group gms-mode-select">
+      <label>Media Mode</label>
+      <div class="form-fields gms-radio-group">
+        <label class="gms-radio">
+          <input type="radio" name="{{gmsField namePrefix 'mediaMode'}}" value="single" {{#if isSingle}}checked{{/if}} />
+          Single Image
+        </label>
+        <label class="gms-radio">
+          <input type="radio" name="{{gmsField namePrefix 'mediaMode'}}" value="list" {{#if isList}}checked{{/if}} />
+          Image List
+        </label>
+        <label class="gms-radio">
+          <input type="radio" name="{{gmsField namePrefix 'mediaMode'}}" value="video" {{#if isVideo}}checked{{/if}} />
+          Video
+        </label>
+      </div>
+    </div>
+
+    <fieldset class="gms-section" data-mode="single">
+      <legend>Single Image</legend>
+      <div class="form-group">
+        <label>Image Path</label>
+        <div class="form-fields">
+          <input type="text" name="{{gmsField namePrefix 'imagePath'}}" value="{{imagePath}}" placeholder="path/to/image.webp" />
+          <button type="button" class="gms-browse" data-target="{{gmsField namePrefix 'imagePath'}}" data-type="image">
+            <i class="fa-solid fa-folder-open"></i>
+          </button>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="gms-section" data-mode="list">
+      <legend>Image List</legend>
+
+      <div class="form-group">
+        <label>Images (one path per line, in display order)</label>
+        <textarea name="{{gmsField namePrefix 'imageList'}}" rows="6" class="gms-fullwidth" placeholder="path/to/image-1.webp&#10;path/to/image-2.webp">{{imageListText}}</textarea>
+        <div class="form-fields">
+          <button type="button" class="gms-browse" data-target="{{gmsField namePrefix 'imageList'}}" data-type="image" data-append="true">
+            <i class="fa-solid fa-folder-open"></i> Add image to list
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>
+          <input type="checkbox" name="{{gmsField namePrefix 'randomizeOrder'}}" {{#if randomizeOrder}}checked{{/if}} />
+          Randomize order each time GMS is triggered
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>Rotation Interval (seconds)</label>
+        <input type="number" name="{{gmsField namePrefix 'rotateInterval'}}" value="{{rotateInterval}}" min="1" />
+      </div>
+    </fieldset>
+
+    <fieldset class="gms-section" data-mode="video">
+      <legend>Video</legend>
+      <div class="form-group">
+        <label>Video Path</label>
+        <div class="form-fields">
+          <input type="text" name="{{gmsField namePrefix 'videoPath'}}" value="{{videoPath}}" placeholder="path/to/video.webm" />
+          <button type="button" class="gms-browse" data-target="{{gmsField namePrefix 'videoPath'}}" data-type="video">
+            <i class="fa-solid fa-folder-open"></i>
+          </button>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="gms-universal">
+      <legend>Media</legend>
+
+      <div class="form-group">
+        <label>Audio Track (optional)</label>
+        <div class="form-fields">
+          <input type="text" name="{{gmsField namePrefix 'audioPath'}}" value="{{audioPath}}" placeholder="path/to/audio.ogg" />
+          <button type="button" class="gms-browse" data-target="{{gmsField namePrefix 'audioPath'}}" data-type="audio">
+            <i class="fa-solid fa-folder-open"></i>
+          </button>
+        </div>
+        <p class="hint">Plays alongside any media mode above. If set while Video is selected, the video's own audio is muted and this file plays instead.</p>
+      </div>
+
+      <div class="form-group">
+        <label>Picture / Video Fit</label>
+        <select name="{{gmsField namePrefix 'mediaFit'}}">
+          <option value="contain" {{#if fitContain}}selected{{/if}}>Contain (fit inside, may show borders)</option>
+          <option value="cover" {{#if fitCover}}selected{{/if}}>Cover (fill screen, may crop)</option>
+          <option value="stretch" {{#if fitStretch}}selected{{/if}}>Stretch (fill screen, may distort)</option>
+          <option value="original" {{#if fitOriginal}}selected{{/if}}>Original size (centred)</option>
+        </select>
+        <p class="hint">How the picture and video fill the screen.</p>
+      </div>
+    </fieldset>
+
+    <fieldset class="gms-universal">
+      <legend>Timing Configuration</legend>
+
+      <div class="form-group">
+        <label>
+          <input type="checkbox" name="{{gmsField namePrefix 'loopMedia'}}" {{#if loopMedia}}checked{{/if}} />
+          Loop video / audio
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>
+          <input type="checkbox" name="{{gmsField namePrefix 'muteAudio'}}" {{#if muteAudio}}checked{{/if}} />
+          Mute audio
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label>Volume</label>
+        <div class="gms-volume-row">
+          <input type="range" name="{{gmsField namePrefix 'volume'}}" min="0" max="100" value="{{volume}}" />
+          <span class="gms-volume-value">{{volume}}%</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Duration in seconds</label>
+        <input type="number" name="{{gmsField namePrefix 'duration'}}" value="{{duration}}" min="0" placeholder="0" />
+        <p class="hint">Leave at 0 to require the GM to close it manually.</p>
+      </div>
+
+      <div class="form-group">
+        <label>Fade In (ms)</label>
+        <input type="number" name="{{gmsField namePrefix 'fadeIn'}}" value="{{fadeIn}}" min="0" step="50" />
+        <p class="hint">Milliseconds for Game Master Screen to fade in. Use 0 for instant.</p>
+      </div>
+
+      <div class="form-group">
+        <label>Fade Out (ms)</label>
+        <input type="number" name="{{gmsField namePrefix 'fadeOut'}}" value="{{fadeOut}}" min="0" step="50" />
+        <p class="hint">Milliseconds for Game Master Screen to fade out. Use 0 for instant.</p>
+      </div>
+    </fieldset>
+  </div>
+</div>

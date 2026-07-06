@@ -1,0 +1,12 @@
+<div class="gms-presets-list">
+  {{#if hasPresets}}
+    {{#each presets}}
+      <div class="gms-preset-row" data-action="playPreset" data-preset-id="{{this.id}}" title="Play this preset">
+        <span class="gms-preset-name">{{this.name}}</span>
+        <i class="fa-solid fa-play"></i>
+      </div>
+    {{/each}}
+  {{else}}
+    <p class="hint">No presets saved yet. Use "Save as Preset" in Game Master Screen — Settings to create one.</p>
+  {{/if}}
+</div>

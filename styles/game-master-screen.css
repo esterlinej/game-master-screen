@@ -1,0 +1,299 @@
+.gms-settings-form .hint {
+  font-size: 12px;
+  opacity: 0.7;
+  margin: 2px 0 0;
+}
+
+.gms-settings-form .gms-universal {
+  margin-bottom: 8px;
+}
+
+.gms-footer {
+  display: flex;
+  gap: 8px;
+}
+
+.gms-footer button {
+  flex: 1;
+}
+
+#gms-player-overlay .gms-preview-badge {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-family: var(--font-primary, sans-serif);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.gms-volume-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gms-volume-row input[type="range"] {
+  flex: 1;
+}
+
+.gms-volume-value {
+  min-width: 40px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.gms-settings-form .gms-preset-row .form-fields {
+  display: flex;
+  gap: 8px;
+}
+
+.gms-settings-form .gms-preset-row select {
+  flex: 1;
+}
+
+.gms-presets-manager .gms-preset-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.gms-presets-manager .gms-preset-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.gms-presets-manager .gms-preset-actions a {
+  cursor: pointer;
+}
+
+.gms-presets-manager .gms-preset-actions a:hover {
+  color: #ff9900;
+}
+
+.gms-presets-manager .gms-preset-reorder {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-right: 8px;
+}
+
+.gms-presets-manager .gms-preset-reorder a {
+  cursor: pointer;
+  font-size: 11px;
+  line-height: 1;
+}
+
+.gms-presets-manager .gms-preset-reorder a:hover {
+  color: #ff9900;
+}
+
+.gms-presets-manager a.gms-disabled {
+  opacity: 0.25;
+  pointer-events: none;
+  cursor: default;
+}
+
+/* Presets Play popup — click-to-fire list, styled as a lighter-weight
+   sibling of the Presets Manager rows above rather than a new pattern. */
+.gms-presets-play .gms-presets-list {
+  padding: 6px;
+}
+
+.gms-presets-play .gms-preset-row {
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  margin-bottom: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.gms-presets-play .gms-preset-row:last-child {
+  margin-bottom: 0;
+}
+
+.gms-presets-play .gms-preset-row:hover {
+  background: rgba(255, 153, 0, 0.15);
+  border-color: rgba(255, 153, 0, 0.4);
+}
+
+.gms-presets-play .gms-preset-name {
+  flex: 1;
+  font-size: 14px;
+}
+
+/* Generic hidden-state utility — used across several injected elements
+   (auto-trigger warning, scene override block, media-mode sections).
+   !important guards against a more-specific rule (like .gms-sls-hint's
+   own display: flex) silently winning and making the class a no-op —
+   the exact bug this fixes: the class was toggling correctly in JS the
+   whole time, but nothing ever defined what "hidden" means for
+   .gms-auto-trigger-warning specifically, so it stayed visible. */
+.gms-hidden {
+  display: none !important;
+}
+
+/* Injected Scene Config tab */
+.gms-scene-config-tab {
+  padding: 4px 2px;
+}
+
+.gms-scene-config-tab .gms-scene-override {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.gms-scene-config-tab .gms-scene-override.gms-hidden {
+  display: none;
+}
+
+.gms-scene-config-tab .gms-sls-hint {
+  color: #ffb454;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+/* Settings form */
+.gms-settings-form .gms-radio-group {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.gms-settings-form .gms-radio {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: normal;
+}
+
+.gms-settings-form textarea.gms-fullwidth {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+.gms-settings-form .gms-section {
+  margin-bottom: 8px;
+}
+
+.gms-settings-form .gms-section.gms-hidden {
+  display: none;
+}
+
+/* Player-facing full-screen overlay */
+#gms-player-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999999;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+#gms-player-overlay .gms-media-primary {
+  width: 100%;
+  height: 100%;
+}
+
+#gms-player-overlay audio {
+  display: none;
+}
+
+/* GM-only compact preview pane — never modal, never blocks the canvas.
+   Positioned via JS (centered on open, then draggable) rather than a fixed
+   CSS anchor, so left/top below are just fallback/initial values. */
+#gms-popout {
+  position: fixed;
+  z-index: 100000;
+  background: rgba(20, 20, 20, 0.92);
+  border: 1px solid #666;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  color: #eee;
+  font-family: var(--font-primary, sans-serif);
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+#gms-popout.gms-popout-small {
+  width: 220px;
+}
+
+#gms-popout.gms-popout-medium {
+  width: 390px;
+}
+
+#gms-popout.gms-popout-large {
+  width: 650px;
+}
+
+#gms-popout.gms-popout-xl {
+  width: 950px;
+}
+
+#gms-popout .gms-popout-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.4);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: move;
+  user-select: none;
+}
+
+#gms-popout .gms-popout-close {
+  cursor: pointer;
+  color: #eee;
+}
+
+#gms-popout .gms-popout-close:hover {
+  color: #ff6666;
+}
+
+#gms-popout .gms-popout-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+#gms-popout.gms-popout-small .gms-popout-body {
+  max-height: 140px;
+}
+
+#gms-popout.gms-popout-medium .gms-popout-body {
+  max-height: 240px;
+}
+
+#gms-popout.gms-popout-large .gms-popout-body {
+  max-height: 400px;
+}
+
+#gms-popout.gms-popout-xl .gms-popout-body {
+  max-height: 580px;
+}
+
+#gms-popout .gms-popout-body img,
+#gms-popout .gms-popout-body video {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
