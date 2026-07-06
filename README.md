@@ -77,8 +77,11 @@ fade-out finishes.
 
 ## Requirements
 
-Built and tested against Foundry VTT V14 (Stable). Minimum supported
-version: V13.
+Requires Foundry VTT V14. Built and verified against 14.364. Does not
+support V13 — the Scene Config per-scene Override tab relies on V13/V14's
+ApplicationV2 sheet structure in a way that hasn't been tested against
+earlier or later major versions, so compatibility is capped at V14 until
+explicitly verified otherwise.
 
 ---
 
