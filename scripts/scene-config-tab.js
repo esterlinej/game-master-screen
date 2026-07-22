@@ -270,5 +270,5 @@ export function getSceneGmsMode(scene) {
 export function resolveSceneOverridePayload(scene) {
   const stored = scene.getFlag(MODULE_ID, SCENE_FLAG_KEY) ?? null;
   if (stored?.mode !== SCENE_MODES.OVERRIDE || !stored.values) return null;
-  return resolvePresetPayload(stored.values);
+  return resolvePresetPayload(stored.values, scene.name);
 }
