@@ -61,7 +61,7 @@ export class GMSPresetsPlayApp extends HandlebarsApplicationMixin(ApplicationV2)
     const preset = presets.find((p) => p.id === id);
     if (!preset) return;
 
-    const mediaData = resolvePresetPayload(preset.values);
+    const mediaData = resolvePresetPayload(preset.values, preset.name);
     await showGameMasterScreen(mediaData);
     this.close();
   }

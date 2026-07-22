@@ -3,6 +3,23 @@
 All notable changes to Game Master Screen are documented here. Format
 loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.1.0] - 2026-07-22
+
+### Added
+- Public scripting/macro API at `game.modules.get("game-master-screen").api`
+  — `trigger()`, `triggerPreset(nameOrId)`, `close()`, and `isActive()`.
+  Built for callers outside GMS's own UI, primarily Monk's Active Tile
+  Triggers' "Run Code" action firing GMS off an environmental trigger
+  (e.g. a door tile) rather than only a GM's toolbar click.
+  `trigger()`/`triggerPreset()`/`close()` require a GM account and
+  resolve `false` with a console warning otherwise; `isActive()` has no
+  such restriction.
+- The GM popout header now shows which preset or scene override is
+  currently playing — `Game Master Screen — <name> — active` — instead
+  of the generic unlabeled text. Falls back to the original text when
+  GMS is fired via the plain global-default trigger, which has no name
+  to show.
+
 ## [1.0.0] - 2026-07-05
 
 ### Changed

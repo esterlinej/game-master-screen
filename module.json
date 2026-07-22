@@ -2,7 +2,7 @@
   "id": "game-master-screen",
   "title": "Game Master Screen",
   "description": "Foundry VTT module for a full-screen GM-controlled pause/loading overlay — trigger manually or on scene activation, with a compact GM-side preview pane that doesn't block board management.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "compatibility": {
     "minimum": "14",
     "verified": "14.364",
@@ -31,6 +31,6 @@
   ],
   "url": "https://github.com/esterlinej/game-master-screen",
   "manifest": "https://raw.githubusercontent.com/esterlinej/game-master-screen/main/module.json",
-  "download": "https://github.com/esterlinej/game-master-screen/archive/refs/tags/v1.0.0.zip",
+  "download": "https://github.com/esterlinej/game-master-screen/archive/refs/tags/v1.1.0.zip",
   "license": "LICENSE"
 }

@@ -39,11 +39,16 @@ export function showPopout(mediaData, onClose, onExpire) {
   el.classList.add(`gms-popout-${game.settings.get(MODULE_ID, SETTINGS.POPOUT_SIZE)}`);
   el.innerHTML = `
     <div class="gms-popout-header">
-      <span>Game Master Screen — active</span>
+      <span class="gms-popout-header-label"></span>
       <a class="gms-popout-close" title="Close for everyone"><i class="fa-solid fa-xmark"></i></a>
     </div>
     <div class="gms-popout-body"></div>
   `;
+  // Set via textContent rather than interpolated into the innerHTML above —
+  // a preset/scene name is user-authored data, no reason to trust it as markup.
+  el.querySelector(".gms-popout-header-label").textContent = mediaData.label
+    ? `Game Master Screen — ${mediaData.label} — active`
+    : "Game Master Screen — active";
 
   const body = el.querySelector(".gms-popout-body");
   body.appendChild(buildMediaElement(mediaData));

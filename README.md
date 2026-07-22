@@ -158,11 +158,40 @@ that particular scene.
 
 ---
 
+## Macro/Scripting API
+
+For triggering GMS from outside its own UI — macros, other modules, or
+[Monk's Active Tile Triggers](https://foundryvtt.com/packages/monks-active-tiles)'
+`Run Code` action on a tile (e.g. auto-firing when a door tile opens,
+rather than only from a GM's own toolbar click):
+
+```js
+const api = game.modules.get("game-master-screen").api;
+
+await api.trigger();              // fire with the current global default
+await api.triggerPreset("Ambush!"); // fire a saved preset by name or id
+await api.close();                // close it early, same as the Close tool
+api.isActive();                   // true/false — is GMS showing right now
+```
+
+`trigger()`, `triggerPreset()`, and `close()` all require a GM account —
+each resolves `false` and logs a console warning if called from a
+non-GM client, rather than throwing an opaque permissions error further
+down. `isActive()` has no such restriction, since checking whether GMS
+is already showing is a reasonable thing for a player-side macro
+condition to do too.
+
+`triggerPreset()` matches on a preset's id first, then falls back to
+its display name (case-insensitive) — either the id from the Presets
+Manager or the name shown there works as the argument.
+
+---
+
 ## Roadmap
 
-Both planned features (per-scene overrides and the Trigger Preset
-toolbar tool) have shipped. No further items currently planned — open
-an issue if you run into something worth adding.
+Per-scene overrides, the Trigger Preset toolbar tool, and the
+Macro/Scripting API have all shipped. No further items currently
+planned — open an issue if you run into something worth adding.
 
 **Considered and shelved for now:** hijacking Foundry's native
 spacebar-pause to also show Game Master Screen. The convenience of one

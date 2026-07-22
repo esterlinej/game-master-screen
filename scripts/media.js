@@ -28,7 +28,8 @@ export function resolveMediaPayload({
   volume,
   duration,
   fadeIn,
-  fadeOut
+  fadeOut,
+  label
 }) {
   const universal = {
     audioSrc: audioPath || null,
@@ -38,7 +39,12 @@ export function resolveMediaPayload({
     volume: Math.min(1, Math.max(0, Number(volume) / 100)),
     duration: Number(duration) || 0,
     fadeIn: Number(fadeIn) || 0,
-    fadeOut: Number(fadeOut) || 0
+    fadeOut: Number(fadeOut) || 0,
+    // Optional display-only label — the popout's GM header shows this
+    // when present ("Game Master Screen — <label> — active"). The global
+    // default trigger has no natural name, so it's left null there; only
+    // callers with a real name (a preset, a scene override) pass one.
+    label: label || null
   };
 
   if (mediaMode === MEDIA_MODES.VIDEO) {
@@ -93,12 +99,12 @@ export async function buildMediaPayload() {
  * a one-off, ephemeral override rather than a change to the global
  * default.
  */
-export function resolvePresetPayload(values) {
+export function resolvePresetPayload(values, label = null) {
   const imageList = String(values.imageList ?? "")
     .split("\n")
     .map((line) => line.trim())
     .filter(Boolean);
-  return resolveMediaPayload({ ...values, imageList });
+  return resolveMediaPayload({ ...values, imageList, label });
 }
 
 /**
