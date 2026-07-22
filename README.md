@@ -13,7 +13,7 @@ module, if you'd rather look than read.
 
 ## Features
 
-**Three ways to trigger**
+**Four ways to trigger**
 - **Manual** — a scene-controls toolbar button. Fire it anytime: a five
   minute break, a dramatic reveal, whatever the moment calls for.
 - **Trigger Preset** — a separate toolbar button that fires any saved
@@ -23,6 +23,12 @@ module, if you'd rather look than read.
   whenever a GM activates a scene (the "Activate" button, not just
   viewing it), using whatever media is currently configured (or that
   scene's own Override, if it has one — see Per-Scene Overrides below).
+- **Scripting/Macro API** — `game.modules.get("game-master-screen").api`
+  exposes `trigger()`, `triggerPreset(nameOrId)`, `close()`, and
+  `isActive()` for macros, other modules, or tile-trigger tools like
+  Monk's Active Tile Triggers. This is what lets something like a door
+  tile fire off a GMS reveal the instant it opens, rather than waiting
+  on a GM's own toolbar click — see Macro/Scripting API below.
 
 **Three media modes**
 - **Single Image**
