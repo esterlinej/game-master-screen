@@ -3,6 +3,20 @@
 All notable changes to Game Master Screen are documented here. Format
 loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.1.2]
+
+### Changed
+- Verified compatibility with Foundry VTT 14.367.
+
+## [1.1.1]
+
+### Fixed
+- `scripts/api.js` was never committed to the repository — it only
+  existed locally, so anyone installing `v1.1.0` fresh from GitHub hit
+  a hard import failure. The public macro API (`trigger()`,
+  `triggerPreset()`, `close()`, `isActive()`) simply didn't work for
+  real installs despite being announced in that release.
+
 ## [1.1.0] - 2026-07-22
 
 ### Added
