@@ -3,6 +3,11 @@
 All notable changes to Game Master Screen are documented here. Format
 loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.1.3]
+
+### Changed
+- Verified compatibility with Foundry VTT 14.368.
+
 ## [1.1.2]
 
 ### Changed
