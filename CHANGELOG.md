@@ -3,6 +3,18 @@
 All notable changes to Game Master Screen are documented here. Format
 loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.1.4]
+
+### Fixed
+- With two GMs connected, only the active GM reacts to scene activation, so the screen is no longer broadcast twice and the scene playlist isn't handled twice.
+- On duration expiry, only the active GM closes the screen for everyone; other GMs just close their own popout.
+
+### Security
+- Socket messages are now validated against the sender id supplied by Foundry's server instead of a `senderId` inside the payload, so a player can no longer forge a GM id to show or close the screen.
+
+### Changed
+- Verified compatibility with Foundry VTT 14.369.
+
 ## [1.1.3]
 
 ### Changed

@@ -9,16 +9,17 @@ import { SOCKET_NAME, ACTIONS, debug } from "./const.js";
 export function registerSocketListener({ onShow, onClose }) {
   debug(`socket listener registered for ${SOCKET_NAME}`);
 
-  game.socket.on(SOCKET_NAME, (payload) => {
-    debug(`socket event received: ${JSON.stringify(payload)}`);
+  game.socket.on(SOCKET_NAME, (payload, senderId) => {
+    debug(`socket event received from ${senderId}: ${JSON.stringify(payload)}`);
 
     if (!payload?.action) return;
 
-    // Only act on broadcasts from a validated GM user — otherwise any
-    // connected client could spoof a show/close event on this channel.
-    const sender = game.users.get(payload.senderId);
+    // Only act on broadcasts from a validated GM user. The sender id is the
+    // one Foundry's server attaches (second listener argument), never a
+    // value from the payload, which any client could forge.
+    const sender = game.users.get(senderId);
     if (!sender?.isGM) {
-      debug(`ignored socket event — sender ${payload.senderId} is not a validated GM`);
+      debug(`ignored socket event — sender ${senderId} is not a validated GM`);
       return;
     }
 
@@ -36,7 +37,7 @@ export function registerSocketListener({ onShow, onClose }) {
 export function broadcastShow(data) {
   debug(`broadcasting show — senderId=${game.user.id}`);
   try {
-    game.socket.emit(SOCKET_NAME, { action: ACTIONS.SHOW, senderId: game.user.id, data });
+    game.socket.emit(SOCKET_NAME, { action: ACTIONS.SHOW, data });
     debug(`broadcastShow — emit call completed without throwing`);
   } catch (err) {
     console.error("game-master-screen | broadcastShow threw", err);
@@ -46,7 +47,7 @@ export function broadcastShow(data) {
 export function broadcastClose() {
   debug(`broadcasting close — senderId=${game.user.id}`);
   try {
-    game.socket.emit(SOCKET_NAME, { action: ACTIONS.CLOSE, senderId: game.user.id });
+    game.socket.emit(SOCKET_NAME, { action: ACTIONS.CLOSE });
     debug(`broadcastClose — emit call completed without throwing`);
   } catch (err) {
     console.error("game-master-screen | broadcastClose threw", err);

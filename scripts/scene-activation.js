@@ -31,7 +31,10 @@ let pausedPlaylistId = null;
  */
 export function registerSceneActivationTrigger() {
   Hooks.on("updateScene", (scene, changes) => {
-    if (!game.user.isGM) return;
+    // Only the active GM reacts, so a second connected GM (e.g. a cast/bot
+    // user) doesn't double-broadcast, double-write settings or double-handle
+    // the scene playlist.
+    if (!game.users.activeGM?.isSelf) return;
     if (changes.active !== true) return;
 
     const mode = getSceneGmsMode(scene);

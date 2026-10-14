@@ -72,8 +72,12 @@ function renderLocalShow(mediaData) {
   // the popout's own close button). A player's timer expiring only ever
   // tears down their own local overlay — it never broadcasts anything.
   const onExpire = () => {
-    if (game.user.isGM) {
+    if (game.users.activeGM?.isSelf) {
+      // Only the active GM ends it for everyone; other GMs' timers just tear
+      // down their own popout so there's one set of writes and broadcasts.
       closeGameMasterScreen();
+    } else if (game.user.isGM) {
+      removePopout();
     } else {
       removeOverlay();
     }
