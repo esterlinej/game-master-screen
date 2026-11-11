@@ -21,6 +21,9 @@ loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ### Changed
 - Verified compatibility with Foundry VTT 14.370.
+- Screenshots moved to `docs/images/`; release `module.zip` excludes `docs/`
+  (same pattern as PF2e Creature Size Matters). README trimmed; full
+  walkthrough remains in `docs/GUIDE.md`.
 
 ## [1.1.4]
 
