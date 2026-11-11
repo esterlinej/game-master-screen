@@ -1,3 +1,5 @@
+import { releaseMediaInRoot, swapImageWithPreload } from "./media-elements.js";
+
 const OVERLAY_ID = "gms-player-overlay";
 
 let rotationTimer = null;
@@ -79,7 +81,7 @@ export function showOverlay(mediaData, options = {}) {
     rotationTimer = setInterval(() => {
       rotationIndex = (rotationIndex + 1) % mediaData.images.length;
       const img = el.querySelector("img.gms-media-primary");
-      if (img) img.src = mediaData.images[rotationIndex];
+      if (img) swapImageWithPreload(img, mediaData.images[rotationIndex]);
     }, mediaData.rotateInterval * 1000);
   }
 
@@ -113,6 +115,7 @@ export function removeOverlay() {
   if (!el) return;
 
   if (fadeOutMs <= 0) {
+    releaseMediaInRoot(el);
     el.remove();
     return;
   }
@@ -121,7 +124,10 @@ export function removeOverlay() {
   el.style.opacity = "0";
   el.style.pointerEvents = "none";
   fadeOutMediaAudio(el, fadeOutMs);
-  setTimeout(() => el.remove(), fadeOutMs);
+  setTimeout(() => {
+    releaseMediaInRoot(el);
+    el.remove();
+  }, fadeOutMs);
 }
 
 /** Ramps audio/video volume down to 0 over durationMs, synced with the
@@ -152,6 +158,7 @@ function buildMediaElement(mediaData) {
     const video = document.createElement("video");
     video.className = "gms-media-primary";
     video.style.objectFit = fit;
+    video.preload = "metadata";
     video.src = mediaData.src;
     video.autoplay = true;
     video.loop = !!mediaData.loop;
@@ -184,6 +191,7 @@ function buildMediaElement(mediaData) {
 /** Independent audio layer — plays alongside ANY media mode, not just video. */
 function buildAudioElement(mediaData) {
   const audio = document.createElement("audio");
+  audio.preload = "metadata";
   audio.src = mediaData.audioSrc;
   audio.autoplay = true;
   audio.loop = !!mediaData.loop;

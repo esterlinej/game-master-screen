@@ -49,7 +49,7 @@ Monk's Active Tile Triggers. This is what lets something like a door tile fire o
 
 ## Requirements
 
-Requires Foundry VTT V14. Built and verified against 14.368. Does not support V13 — the Scene Config per-scene Override tab relies on V14's ApplicationV2 sheet structure in a way that hasn't been tested against earlier or later major versions, so compatibility is capped at V14 until explicitly verified otherwise.
+Requires Foundry VTT V14. Built and verified against 14.370. Does not support V13 — the Scene Config per-scene Override tab relies on V14's ApplicationV2 sheet structure in a way that hasn't been tested against earlier or later major versions, so compatibility is capped at V14 until explicitly verified otherwise.
 
 ---
 

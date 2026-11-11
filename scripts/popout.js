@@ -1,4 +1,5 @@
 import { MODULE_ID, SETTINGS } from "./const.js";
+import { releaseMediaInRoot, swapImageWithPreload } from "./media-elements.js";
 
 const POPOUT_ID = "gms-popout";
 
@@ -70,7 +71,7 @@ export function showPopout(mediaData, onClose, onExpire) {
     rotationTimer = setInterval(() => {
       rotationIndex = (rotationIndex + 1) % mediaData.images.length;
       const img = el.querySelector("img.gms-popout-media");
-      if (img) img.src = mediaData.images[rotationIndex];
+      if (img) swapImageWithPreload(img, mediaData.images[rotationIndex]);
     }, mediaData.rotateInterval * 1000);
   }
 
@@ -92,7 +93,11 @@ export function removePopout() {
     rotationTimer = null;
   }
   detachAutoplayRetryListeners();
-  document.getElementById(POPOUT_ID)?.remove();
+  const el = document.getElementById(POPOUT_ID);
+  if (el) {
+    releaseMediaInRoot(el);
+    el.remove();
+  }
 }
 
 function buildMediaElement(mediaData) {
@@ -102,6 +107,7 @@ function buildMediaElement(mediaData) {
   if (mediaData.type === "video") {
     const video = document.createElement("video");
     video.style.objectFit = fit;
+    video.preload = "metadata";
     video.src = mediaData.src;
     video.autoplay = true;
     video.loop = !!mediaData.loop;
@@ -134,6 +140,7 @@ function buildMediaElement(mediaData) {
  *  AND mediaData.audioSrc is set (see showPopout's guard above). */
 function buildAudioElement(mediaData) {
   const audio = document.createElement("audio");
+  audio.preload = "metadata";
   audio.src = mediaData.audioSrc;
   audio.autoplay = true;
   audio.loop = !!mediaData.loop;
