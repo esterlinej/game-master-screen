@@ -27,12 +27,14 @@ jobs:
       # manually-built module.zip pattern already in use, so Foundry
       # extracts straight into a folder it names after module.json's own
       # id, with no renaming quirks from a nested herald-1.1.0/ folder.
+      # docs/ is repo-only (GUIDE + screenshots); nothing at runtime reads it.
       - name: Build module.zip
         run: |
           zip -r module.zip . \
             -x ".git" -x ".git/*" \
             -x ".github" -x ".github/*" \
             -x ".gitignore" \
+            -x "docs" -x "docs/*" \
             -x "module.zip"
 
       # Attaches to the SAME release (matched by tag_name) rather than
