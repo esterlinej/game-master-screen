@@ -1,4 +1,5 @@
 import { MODULE_ID, SETTINGS } from "./const.js";
+import { registerPresetsChangedHook, unregisterPresetsChangedHook } from "./app-lifecycle.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -26,14 +27,14 @@ export class GMSPresetsManagerApp extends HandlebarsApplicationMixin(Application
     }
   };
 
-  constructor(options = {}) {
-    super(options);
-    this._hookId = Hooks.on(`${MODULE_ID}.presetsChanged`, () => this.render(true));
+  _onFirstRender(context, options) {
+    super._onFirstRender?.(context, options);
+    registerPresetsChangedHook(this);
   }
 
-  async close(options) {
-    Hooks.off(`${MODULE_ID}.presetsChanged`, this._hookId);
-    return super.close(options);
+  async _onClose(options) {
+    unregisterPresetsChangedHook(this);
+    return super._onClose(options);
   }
 
   async _prepareContext() {

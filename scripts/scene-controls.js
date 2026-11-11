@@ -1,6 +1,7 @@
 import { showGameMasterScreen, closeGameMasterScreen } from "./core.js";
 import { GMSSettingsApp } from "./settings-app.js";
 import { GMSPresetsPlayApp } from "./presets-play-app.js";
+import { renderOrFocusApp } from "./app-lifecycle.js";
 
 /**
  * V13+ getSceneControlButtons: `controls` is an object keyed by control
@@ -33,7 +34,7 @@ export function registerSceneControls() {
             order: 1,
             button: true,
             visible: game.user.isGM,
-            onChange: () => new GMSPresetsPlayApp().render(true)
+            onChange: () => renderOrFocusApp(GMSPresetsPlayApp)
           },
           close: {
             name: "close",
@@ -51,7 +52,7 @@ export function registerSceneControls() {
             order: 3,
             button: true,
             visible: game.user.isGM,
-            onChange: () => new GMSSettingsApp().render(true)
+            onChange: () => renderOrFocusApp(GMSSettingsApp)
           }
         }
       };

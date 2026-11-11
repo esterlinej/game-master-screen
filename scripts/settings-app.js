@@ -1,6 +1,7 @@
 import { MODULE_ID, SETTINGS, MEDIA_MODES, MEDIA_FITS } from "./const.js";
 import { showOverlay } from "./overlay.js";
 import { GMSPresetsManagerApp } from "./presets-manager-app.js";
+import { registerPresetsChangedHook, unregisterPresetsChangedHook, renderOrFocusApp } from "./app-lifecycle.js";
 
 const { HandlebarsApplicationMixin, ApplicationV2 } = foundry.applications.api;
 
@@ -26,16 +27,21 @@ export class GMSSettingsApp extends HandlebarsApplicationMixin(ApplicationV2) {
     form: { template: `modules/${MODULE_ID}/templates/settings.hbs` }
   };
 
-  constructor(options = {}) {
-    super(options);
-    // Keeps the preset dropdown in sync if a preset is renamed/deleted via
-    // the Presets Manager while this form is also open.
-    this._presetsHookId = Hooks.on(`${MODULE_ID}.presetsChanged`, () => this.render(true));
+  _onFirstRender(context, options) {
+    super._onFirstRender?.(context, options);
+    // One listener for the window lifetime — _onRender reuses the same element.
+    this._keydownStopPropagation = (event) => event.stopPropagation();
+    this.element.addEventListener("keydown", this._keydownStopPropagation);
+    registerPresetsChangedHook(this);
   }
 
-  async close(options) {
-    Hooks.off(`${MODULE_ID}.presetsChanged`, this._presetsHookId);
-    return super.close(options);
+  async _onClose(options) {
+    unregisterPresetsChangedHook(this);
+    if (this._keydownStopPropagation) {
+      this.element?.removeEventListener("keydown", this._keydownStopPropagation);
+      this._keydownStopPropagation = null;
+    }
+    return super._onClose(options);
   }
 
   async _prepareContext() {
@@ -69,13 +75,6 @@ export class GMSSettingsApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
   _onRender(context, options) {
     super._onRender?.(context, options);
-
-    // Prevent keystrokes inside this form from bubbling up to Foundry's
-    // global keybinding handler — otherwise typing a space or activating a
-    // focused button with the keyboard can double-fire core's pause hotkey.
-    this.element.addEventListener("keydown", (event) => {
-      event.stopPropagation();
-    });
 
     // Live show/hide of the mode-specific sections only — the universal
     // fieldsets (class gms-universal) are never toggled here, since they
@@ -150,7 +149,7 @@ export class GMSSettingsApp extends HandlebarsApplicationMixin(ApplicationV2) {
 
     // Opens the standalone Presets Manager for rename/delete.
     this.element.querySelector(".gms-manage-presets")?.addEventListener("click", () => {
-      new GMSPresetsManagerApp().render(true);
+      renderOrFocusApp(GMSPresetsManagerApp);
     });
 
     // Save as Preset — captures the form's current raw values (not the

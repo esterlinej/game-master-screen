@@ -3,6 +3,25 @@
 All notable changes to Game Master Screen are documented here. Format
 loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.1.5]
+
+### Fixed
+- `presetsChanged` hook listeners on Settings, Presets Play, and Presets
+  Manager windows register on first render and unregister on close, and
+  toolbar buttons re-focus an existing ApplicationV2 instance instead of
+  constructing a new one — prevents duplicate hook callbacks when reopening
+  GMS configuration windows.
+- Settings form `keydown` propagation guard binds once per window lifetime
+  (`_onFirstRender` / `_onClose`) instead of on every `_onRender`.
+- Player overlay and GM popout release video/audio/image decoder memory on
+  close (pause, clear `src`, `load()`); video and standalone audio use
+  `preload="metadata"`.
+- Image-list rotation preloads the next frame in an off-DOM `Image` before
+  swapping `src`, reducing flashes without retaining every slide in memory.
+
+### Changed
+- Verified compatibility with Foundry VTT 14.370.
+
 ## [1.1.4]
 
 ### Fixed
